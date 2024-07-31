@@ -1,0 +1,660 @@
+$ruler: 12px;
+$color-red: #AE1100;
+$color-bg: #EBECF0;
+
+$font-white-color: #a9acb9;
+//$font-white-color: #BABECC;
+$font-white-shadow: 1px 1px 1px #FFF;
+
+$color-white-surface: #EBECF0;
+//$color-white-surface: #e8e8e8;
+
+$color-high-light: #ffffff;
+//$color-shadow: #c5c5c5;
+$color-shadow: rgba(136, 165, 191, 0.48);
+
+$box-deep-high-light: -9px -9px 16px $color-high-light;
+$box-deep-shadow: 9px 9px 16px $color-shadow;
+$box-middle-high-light: -3px -3px 5px $color-high-light;
+$box-middle-shadow: 3px 3px 5px $color-shadow;
+$box-shallow-high-light: -2px -2px 1px $color-high-light;
+$box-shallow-shadow: 2px 2px 1px $color-shadow;
+
+$bg-gradation-convex: linear-gradient(318.32deg, rgba(255, 255, 255, 0.1) 0%, rgba(255, 255, 255, 0.1) 55%, rgba(255, 255, 255, 0.25) 100%); // 凸
+$bg-gradation-concave: linear-gradient(318.32deg, rgba(197, 197, 197, 0.05) 0%, rgba(197, 197, 197, 0.05) 55%, rgba(197, 197, 197, 0.125) 100%); // 凹
+
+// (フォント差し替え方法: https://www.developermindset.com/tauri-custom-window-and-custom-font/)
+@font-face {
+  font-display: block; // (参考: https://fontplus.jp/usage/services/change-on-screen)
+  font-family: "M PLUS 1 Code";
+  src: url("assets/MPLUS1Code-VariableFont_wght.ttf");
+}
+
+:root {
+}
+
+body, html {
+  background-color: $color-bg;
+  border-radius: $ruler;
+  margin: 0;
+  overflow: hidden;
+  user-select: none; // テキスト選択を無効
+  -webkit-user-select: none; // テキスト選択を無効forMac (参考: https://github.com/tauri-apps/tauri/issues/5016)
+  cursor: default; // テキスト上でもカーソルを通常状態に
+}
+
+body, p, select, textarea, button, pre {
+  font-family: 'M PLUS 1 Code', sans-serif;
+  //letter-spacing: 0.5px;
+  font-size: $ruler;
+}
+
+div, p {
+  color: $font-white-color;
+  text-shadow: $font-white-shadow;
+}
+
+form {
+  padding: $ruler;
+  width: $ruler*20;
+  margin: 0 auto;
+}
+
+.segment {
+  padding: $ruler*2 0;
+  text-align: center;
+}
+
+button, textarea {
+  border: 0;
+  outline: 0;
+  font-size: $ruler;
+  border-radius: $ruler;
+  padding: $ruler;
+  background-color: $color-white-surface;
+  color: $font-white-color;
+  text-shadow: $font-white-shadow;
+}
+
+//input {
+//  margin-right: $ruler/2;
+//  box-shadow: inset 2px 2px 5px $color-shadow, inset -5px -5px 10px $color-white;
+//  width: 100%;
+//  box-sizing: border-box;
+//  transition: all 0.2s ease-in-out;
+//  appearance: none;
+//  -webkit-appearance: none;
+//
+//  &:focus {
+//    box-shadow: inset 1px 1px 2px $color-shadow, inset -1px -1px 2px $color-white;
+//  }
+//}
+
+textarea {
+  resize: none;
+  border-radius: $ruler;
+  margin-right: $ruler*0.5;
+  box-shadow: inset $box-middle-shadow, inset $box-middle-high-light;
+  width: 100%;
+  box-sizing: border-box;
+  transition: all 0.2s ease-in-out;
+  appearance: none;
+  -webkit-appearance: none;
+  background: $bg-gradation-concave;
+
+  &:focus {
+    box-shadow: inset $box-shallow-shadow, inset $box-shallow-high-light;
+  }
+}
+
+::placeholder {
+  color: $font-white-color;
+  text-shadow: $font-white-shadow;
+}
+
+button {
+  font-weight: bold;
+  box-shadow: $box-middle-shadow, $box-middle-high-light;
+  transition: all 0.2s ease-in-out;
+  cursor: pointer;
+  background: $bg-gradation-convex;
+
+  &:hover {
+    box-shadow: $box-shallow-shadow, $box-shallow-high-light;
+  }
+
+  &:active {
+    box-shadow: inset $box-middle-shadow, inset $box-middle-high-light;
+    background: $bg-gradation-concave;
+  }
+}
+
+.button-shallow {
+  font-weight: bold;
+  box-shadow: $box-shallow-shadow, $box-shallow-high-light;
+  transition: all 0.2s ease-in-out;
+  cursor: pointer;
+  background: $bg-gradation-convex;
+  border-radius: $ruler*0.5;
+
+  &:hover {
+    //background-color: rgba(255, 210, 150, 1.0);
+    //box-shadow: $box-shallow-shadow, -2px -2px 1px rgba(255, 240, 200, 1.0);
+  }
+
+  &:active {
+    box-shadow: inset $box-shallow-shadow, inset $box-shallow-high-light;
+    background: $bg-gradation-concave;
+  }
+}
+
+.hover-shallow-inset-box {
+  //transition: box-shadow 0.3s;
+  border-radius: $ruler;
+
+  &:hover {
+    box-shadow: inset $box-shallow-shadow, inset $box-shallow-high-light;
+  }
+}
+
+.input-group {
+  display: flex;
+  align-items: center;
+  justify-content: flex-start;
+
+  label {
+    margin: 0;
+    flex: 1;
+  }
+}
+
+.titlebar {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  height: 40px;
+  -webkit-app-region: drag; // Enable dragging
+}
+
+.title {
+  -webkit-app-region: no-drag; // Prevent dragging on the title text
+  font-size: 15px;
+  font-weight: bold;
+}
+
+
+// --- check box ---
+/*!
+Copyright - 2024 shreyasm-dev  
+Permission is hereby granted, free of charge, to any person obtaining a copy of this software and associated documentation files (the “Software”), to deal in the Software without restriction, including without limitation the rights to use, copy, modify, merge, publish, distribute, sublicense, and/or sell copies of the Software, and to permit persons to whom the Software is furnished to do so, subject to the following conditions:
+The above copyright notice and this permission notice shall be included in all copies or substantial portions of the Software.
+THE SOFTWARE IS PROVIDED “AS IS”, WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
+ */
+.checkbox-container input { // Hide the default checkbox
+  //position: absolute;
+  opacity: 0;
+  cursor: pointer;
+  height: 0;
+  width: 0;
+  margin: 0;
+}
+
+.checkbox-container {
+  display: flex;
+  //position: relative;
+  cursor: pointer;
+  font-size: 20px;
+  margin: 5px 5px;
+}
+
+.checkmark { // Create a custom checkbox
+  position: relative;
+  top: 0;
+  left: 0;
+  height: 1.3em;
+  width: 1.3em;
+  border-radius: 100%;
+  box-shadow: $box-middle-shadow, $box-middle-high-light;
+  transition-duration: 0.5s;
+  background: $bg-gradation-convex;
+
+  &:hover {
+    box-shadow: $box-shallow-shadow, $box-shallow-high-light;
+  }
+
+  &:after {
+    content: "";
+    position: absolute;
+    opacity: 0;
+    left: 0.45em;
+    top: 0.25em;
+    width: 0.25em;
+    height: 0.5em;
+    border: solid darkgray;
+    border-width: 0 0.15em 0.15em 0;
+    transform: rotate(45deg);
+  }
+}
+
+.checkbox-container input:checked ~ .checkmark {
+  box-shadow: inset $box-middle-shadow, inset $box-middle-high-light;
+  background: $bg-gradation-concave;
+}
+
+.checkbox-container input:checked ~ .checkmark:after {
+  opacity: 1;
+}
+
+// --- toggle ---
+/*!
+Copyright - 2024 mobinkakei (Mobeen) 
+Permission is hereby granted, free of charge, to any person obtaining a copy of this software and associated documentation files (the “Software”), to deal in the Software without restriction, including without limitation the rights to use, copy, modify, merge, publish, distribute, sublicense, and/or sell copies of the Software, and to permit persons to whom the Software is furnished to do so, subject to the following conditions:
+The above copyright notice and this permission notice shall be included in all copies or substantial portions of the Software.
+THE SOFTWARE IS PROVIDED “AS IS”, WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
+ */
+.toggle-container {
+  display: inline-flex;
+  align-items: center;
+  cursor: pointer;
+}
+
+.toggle {
+  margin: 5px 8px;
+  isolation: isolate;
+  position: relative;
+  height: 20px;
+  width: 40px;
+  border-radius: 15px;
+  overflow: hidden;
+  box-shadow: $box-middle-shadow, $box-middle-high-light, inset $box-shallow-shadow, inset $box-shallow-high-light;
+  background: $bg-gradation-concave;
+}
+
+.toggle-state {
+  display: none;
+}
+
+.indicator {
+  height: 100%;
+  width: 200%;
+  background: $color-white-surface;
+  border-radius: 15px;
+  transform: translate3d(-75%, 0, 0);
+  transition: transform 0.4s cubic-bezier(0.85, 0.05, 0.18, 1.35);
+  box-shadow: $box-middle-shadow, $box-middle-high-light;
+}
+
+.toggle-state:checked ~ .indicator {
+  transform: translate3d(25%, 0, 0);
+}
+
+
+// --- card ---
+.card {
+  margin: $ruler;
+  display: flex;
+  padding: $ruler $ruler;
+  //position: relative;
+  background: transparent;
+  border-radius: $ruler*2;
+  border: 1px solid rgba(255, 255, 255, 0.2);
+
+  &.deep {
+    box-shadow: $box-deep-shadow, $box-deep-high-light;
+    background: $bg-gradation-convex;
+
+    margin: $ruler*2;
+  }
+
+  &.middle {
+    box-shadow: $box-middle-shadow, $box-middle-high-light;
+    background: $bg-gradation-convex;
+  }
+
+  &.shallow {
+    box-shadow: $box-shallow-shadow, $box-shallow-high-light;
+    background: $bg-gradation-convex;
+    margin: $ruler*0.8;
+  }
+
+  &.deep-inset {
+    box-shadow: inset $box-deep-high-light, inset $box-deep-shadow;
+    background: $bg-gradation-concave;
+  }
+
+  &.middle-inset {
+    box-shadow: inset $box-middle-high-light, inset $box-middle-shadow;
+    background: $bg-gradation-concave;
+  }
+
+  &.shallow-inset {
+    box-shadow: inset $box-shallow-high-light, inset $box-shallow-shadow;
+    background: $bg-gradation-concave;
+  }
+
+  &.deep-frame {
+    box-shadow: $box-deep-shadow, $box-deep-high-light,
+    inset $box-deep-shadow, inset $box-deep-high-light;
+  }
+
+  &.middle-frame {
+    box-shadow: $box-middle-shadow, $box-middle-high-light,
+    inset $box-middle-shadow, inset $box-middle-high-light;
+  }
+
+  &.shallow-frame {
+    box-shadow: $box-shallow-shadow, $box-shallow-high-light,
+    inset $box-shallow-shadow, inset $box-shallow-high-light;
+  }
+
+  &.deep-frame-inset {
+    box-shadow: 9px 9px 16px $color-high-light,
+    -9px -9px 16px $color-shadow,
+    inset 9px 9px 16px $color-high-light,
+    inset -9px -9px 16px $color-shadow;
+  }
+
+  &.middle-frame-inset {
+    box-shadow: 3px 3px 5px $color-high-light,
+    -3px -3px 5px $color-shadow,
+    inset 3px 3px 5px $color-high-light,
+    inset -3px -3px 5px $color-shadow;
+  }
+
+  &.shallow-frame-inset {
+    box-shadow: 2px 2px 5px $color-high-light,
+    -2px -2px 5px $color-shadow,
+    inset 2px 2px 1px $color-high-light,
+    inset -2px -2px 1px $color-shadow;
+  }
+}
+
+// --- radio ---
+.radio {
+  display: flex;
+  padding: 0;
+  margin: 10px 15px;
+  align-items: center;
+  list-style-type: none;
+}
+
+.radio li {
+  margin: 0px 5px;
+  padding: 8px 15px;
+  font-weight: bold;
+  box-shadow: $box-middle-shadow, $box-middle-high-light;
+  transition: all 0.2s ease-in-out;
+  cursor: pointer;
+  background: $bg-gradation-convex;
+
+  &:hover {
+    box-shadow: $box-shallow-shadow, $box-shallow-high-light;
+  }
+
+  &:active {
+    box-shadow: inset $box-middle-shadow, inset $box-middle-high-light;
+    background: $bg-gradation-concave;
+  }
+
+  &:focus {
+    //color: orangered;
+    box-shadow: inset $box-middle-shadow, inset $box-middle-high-light;
+    background: $bg-gradation-concave;
+  }
+}
+
+// --- tab ---
+.react-tabs {
+  -webkit-tap-highlight-color: transparent;
+}
+
+.react-tabs__tab-list {
+  padding: 0;
+}
+
+.react-tabs__tab {
+  display: inline-block;
+
+  border: 0;
+  outline: 0;
+  font-size: $ruler;
+  border-radius: $ruler;
+  padding: $ruler * 0.7;
+  color: $font-white-color;
+  text-shadow: $font-white-shadow;
+
+  font-weight: bold;
+  box-shadow: $box-middle-shadow, $box-middle-high-light;
+  transition: all 0.2s ease-in-out;
+  cursor: pointer;
+  background: $bg-gradation-convex;
+
+  margin: 0px 4px;
+}
+
+.react-tabs__tab--selected {
+  box-shadow: inset $box-middle-shadow, inset $box-middle-high-light;
+  background: $bg-gradation-concave;
+}
+
+.react-tabs__tab--disabled {
+  color: GrayText;
+  cursor: default;
+}
+
+.react-tabs__tab:focus {
+  box-shadow: inset $box-middle-shadow, inset $box-middle-high-light;
+  background: $bg-gradation-concave;
+}
+
+.react-tabs__tab-panel {
+  display: none;
+}
+
+.react-tabs__tab-panel--selected {
+  display: block;
+}
+
+
+// --- 黒オーバーレイ ---
+#overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(0, 0, 0, 0.8);
+  z-index: 1000;
+  display: none; // 初期状態では非表示
+}
+
+#overlay-no-block-panel {
+  display: none; // 初期状態では非表示
+}
+
+
+// --- キャンセルボタン ---
+.cancel-button {
+  border: 0;
+  outline: 0;
+  border-radius: 0;
+  padding: 0;
+  box-shadow: none;
+  letter-spacing: 3.0px;
+
+  font-size: 18px;
+  color: #fff;
+  text-shadow: 1px 1px 10px rgb(95, 150, 202);
+  font-weight: 800;
+  cursor: pointer;
+  position: relative;
+  border: none;
+  background: none;
+  transition-timing-function: cubic-bezier(0.25, 0.8, 0.25, 1);
+  transition-duration: 400ms;
+  transition-property: color;
+
+  &:active {
+    box-shadow: none;
+    background: none;
+  }
+
+  &:focus,
+  &:hover {
+    color: #fff;
+    box-shadow: none;
+
+    &:after {
+      width: 100%;
+      left: 0%;
+    }
+  }
+
+  &:after {
+    content: "";
+    pointer-events: none;
+    bottom: -2px;
+    left: 50%;
+    position: absolute;
+    width: 0%;
+    height: 2px;
+    background-color: rgb(95, 150, 202);
+    transition-timing-function: cubic-bezier(0.25, 0.8, 0.25, 1);
+    transition-duration: 400ms;
+    transition-property: width, left;
+  }
+}
+
+
+// --- ロードアイコン ---
+/*!
+Copyright - 2024 abrahamcalsin (Abraham Calsin) 
+Permission is hereby granted, free of charge, to any person obtaining a copy of this software and associated documentation files (the “Software”), to deal in the Software without restriction, including without limitation the rights to use, copy, modify, merge, publish, distribute, sublicense, and/or sell copies of the Software, and to permit persons to whom the Software is furnished to do so, subject to the following conditions:
+The above copyright notice and this permission notice shall be included in all copies or substantial portions of the Software.
+THE SOFTWARE IS PROVIDED “AS IS”, WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
+ */
+.dot-spinner {
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: flex-start;
+  --uib-speed: 0.9s;
+  height: 2.8rem;
+  width: 2.8rem;
+}
+
+@keyframes float {
+  0% {
+    transform: rotate(0deg) translate(100px) rotate(0deg);
+  }
+
+  100% {
+    transform: rotate(360deg) translate(100px) rotate(-360deg);
+  }
+}
+
+.dot-spinner__dot::before {
+  content: '';
+  height: 20%;
+  width: 20%;
+  border-radius: 50%;
+  background-color: #fff;
+  filter: drop-shadow(0 0 10px rgb(95, 150, 202));
+  transform: scale(0);
+  opacity: 0.5;
+  animation: pulse0112 calc(var(--uib-speed) * 1.111) ease-in-out infinite;
+  box-shadow: 0 0 20px rgba(18, 31, 53, 0.3);
+}
+
+.dot-spinner__dot {
+  position: absolute;
+  top: 0;
+  left: 0;
+  display: flex;
+  align-items: center;
+  justify-content: flex-start;
+  height: 100%;
+  width: 100%;
+}
+
+.dot-spinner__dot:nth-child(2) {
+  transform: rotate(45deg);
+}
+
+.dot-spinner__dot:nth-child(2)::before {
+  animation-delay: calc(var(--uib-speed) * -0.875);
+}
+
+.dot-spinner__dot:nth-child(3) {
+  transform: rotate(90deg);
+}
+
+.dot-spinner__dot:nth-child(3)::before {
+  animation-delay: calc(var(--uib-speed) * -0.75);
+}
+
+.dot-spinner__dot:nth-child(4) {
+  transform: rotate(135deg);
+}
+
+.dot-spinner__dot:nth-child(4)::before {
+  animation-delay: calc(var(--uib-speed) * -0.625);
+}
+
+.dot-spinner__dot:nth-child(5) {
+  transform: rotate(180deg);
+}
+
+.dot-spinner__dot:nth-child(5)::before {
+  animation-delay: calc(var(--uib-speed) * -0.5);
+}
+
+.dot-spinner__dot:nth-child(6) {
+  transform: rotate(225deg);
+}
+
+.dot-spinner__dot:nth-child(6)::before {
+  animation-delay: calc(var(--uib-speed) * -0.375);
+}
+
+.dot-spinner__dot:nth-child(7) {
+  transform: rotate(270deg);
+}
+
+.dot-spinner__dot:nth-child(7)::before {
+  animation-delay: calc(var(--uib-speed) * -0.25);
+}
+
+.dot-spinner__dot:nth-child(8) {
+  transform: rotate(315deg);
+}
+
+.dot-spinner__dot:nth-child(8)::before {
+  animation-delay: calc(var(--uib-speed) * -0.125);
+}
+
+@keyframes pulse0112 {
+  0%,
+  100% {
+    transform: scale(0);
+    opacity: 0.5;
+  }
+
+  50% {
+    transform: scale(1);
+    opacity: 1;
+  }
+}
+
+
+// --- スクロールバー ---
+::-webkit-scrollbar {
+  width: 4px; // スクロールバー全体の幅
+  height: 4px; // スクロールバー全体の幅
+  background-color: #00000000; // スクロールバーの背景色
+}
+
+::-webkit-scrollbar-thumb {
+  border-radius: 10px; // スクロールバーの丸み
+  box-shadow: inset 0 0 10px 10px #909090; // スクロールバーの色
+}

@@ -1,0 +1,70 @@
+{
+  "build": {
+    "beforeDevCommand": "npm run dev",
+    "beforeBuildCommand": "npm run build",
+    "devPath": "http://localhost:1420",
+    "distDir": "../dist"
+  },
+  "package": {
+    "productName": "zengit",
+    "version": "1.0.0"
+  },
+  "tauri": {
+    "allowlist": {
+      "all": false,
+      "shell": {
+        "all": true
+      },
+      "dialog": {
+        "message": true,
+        "ask": true
+      },
+      "window": {
+        "maximize": true,
+        "minimize": true,
+        "hide": true,
+        "startDragging": true,
+        "show": true,
+        "close": true,
+        "unmaximize": true,
+        "unminimize": true
+      }
+    },
+    "windows": [
+      {
+        "title": "ZenGit",
+        "width": 1200,
+        "height": 800,
+        "fileDropEnabled": false,
+        "resizable": true,
+        "maximizable": true,
+        "minimizable": true,
+        "closable": true,
+        "focus": true,
+        "alwaysOnTop": false,
+        "contentProtected": false,
+        "skipTaskbar": false,
+        "transparent": true,
+        "decorations": false,
+        "fullscreen": false,
+        "additionalBrowserArgs": "--disable-features=msWebOOUI,msPdfOOUI,msSmartScreenProtection --disable-gpu --disable-local-storage --disable-background-networking --kiosk --disable-context-menu --single-process"
+      }
+    ],
+    "security": {
+      "csp": null
+    },
+    "bundle": {
+      "active": true,
+      "targets": "all",
+      "identifier": "tom-shimoda",
+      "icon": [
+        "icons/32x32.png",
+        "icons/128x128.png",
+        "icons/128x128@2x.png",
+        "icons/icon.icns",
+        "icons/icon.ico"
+      ]
+    },
+    "macOSPrivateApi": true
+  }
+}
