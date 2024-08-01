@@ -1055,7 +1055,11 @@ function App() {
             return;
         }
 
-        await getPullPushCount();
+        await Promise.all([
+            gitLog(),
+            gitBranch(),
+            getPullPushCount(),
+        ]);
 
         hideOverlay(GitCommand.Push);
         alert(result.result);
@@ -1078,8 +1082,11 @@ function App() {
             return;
         }
 
-        await fetchStatus();
-        setViewMode(ViewMode.Commit);
+        await Promise.all([
+            gitLog(),
+            gitBranch(),
+            fetchStatus(),
+        ]);
 
         hideOverlay(GitCommand.Pull);
         alert(result.result);
@@ -1102,8 +1109,11 @@ function App() {
             return;
         }
 
-        setViewMode(ViewMode.Commit);
-        await getPullPushCount();
+        await Promise.all([
+            gitLog(),
+            gitBranch(),
+            getPullPushCount(),
+        ]);
 
         hideOverlay(GitCommand.Fetch);
     }
