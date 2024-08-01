@@ -1883,8 +1883,6 @@ function App() {
                                     onContextMenu={(event) => handleContextMenu_branch(event, v)}
                                     style={{
                                         display: 'flex',
-                                        color: v.branch_state === BranchState.Current ? '#1493ad' : '',
-                                        fontWeight: v.branch_state === BranchState.Current ? 'bold' : 'normal',
                                         listStyleType: 'none',
                                         padding: '10px',
                                         flex: '1',
@@ -1900,7 +1898,10 @@ function App() {
                                                 }}/>
                                             ) : (<div/>)
                                     }
-                                    <div>
+                                    <div style={{
+                                        color: v.branch_state === BranchState.Current ? '#1493ad' : '',
+                                        fontWeight: v.branch_state === BranchState.Current ? 'bold' : 'normal',
+                                    }}>
                                         {getBranchNameViewStr(v)}
                                     </div>
                                 </li>
