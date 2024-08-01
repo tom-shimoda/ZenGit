@@ -1,5 +1,4 @@
 # ZenGit
-[English](./README_en.md)
 <div style="text-align: center;">
     <img src="./readme_images/icon.png" width="30%">
 </div>
@@ -8,16 +7,20 @@
 
 (※ [git](https://git-scm.com/)は内包しておらず、別途インストールする必要があります。)
 
+## インストール手順
+1. [Releases](https://github.com/tom-shimoda/ZenGit/releases)へ移動
+2. Windowsの場合は`msi`ファイル、Macの場合は`dmg`ファイルをダウンロードし、インストール
+
 ## 機能説明
 
 ## メニュー
 <img src="./readme_images/menu.png" width="40%">
 
-- **タイトルバー**: 現在開いているgitプロジェクトフォルダが表示されます。
 - **Open**: 操作対象のgitプロジェクトフォルダを選択します。
 - **Fetch**: fetchします。(マージはしません)
 - **Pull**: pullします。リモートブランチが現在のブランチより進んでいる数が表示されます。
 - **Push**: プッシュします。現在のブランチがリモートブランチより進んでいる数が表示されます。
+- **タイトルバー**: 現在開いているgitプロジェクトフォルダが表示されます。
 
 ## モード
 <img src="./readme_images/mode.png" width="15%">
