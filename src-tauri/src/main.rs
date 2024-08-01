@@ -889,6 +889,7 @@ async fn git_log(app_handle: AppHandle, window_label: String, is_show_all: bool,
             }
             if !branch_name.is_empty() {
                 command.arg(branch_name);
+                command.arg("--"); // ファイル/フォルダ名とブランチ名が同じ場合エラーが出るためブランチ名として明示する (https://qiita.com/hakuisan/items/d2e40bec6d2785202885)
             }
         }
 
@@ -920,7 +921,7 @@ async fn git_log(app_handle: AppHandle, window_label: String, is_show_all: bool,
                                                   author: "".to_string(),
                                                   message: "".to_string(),
                                                   date: "".to_string(),
-                                                  branch: "".to_string(),
+                                                  branch: "".to_string()
                                               }
                                           }
                                       })

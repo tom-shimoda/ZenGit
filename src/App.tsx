@@ -1055,7 +1055,11 @@ function App() {
             return;
         }
 
-        await getPullPushCount();
+        await Promise.all([
+            gitLog(),
+            gitBranch(),
+            getPullPushCount(),
+        ]);
 
         hideOverlay(GitCommand.Push);
         alert(result.result);
@@ -1078,8 +1082,11 @@ function App() {
             return;
         }
 
-        await fetchStatus();
-        setViewMode(ViewMode.Commit);
+        await Promise.all([
+            gitLog(),
+            gitBranch(),
+            fetchStatus(),
+        ]);
 
         hideOverlay(GitCommand.Pull);
         alert(result.result);
@@ -1102,8 +1109,11 @@ function App() {
             return;
         }
 
-        setViewMode(ViewMode.Commit);
-        await getPullPushCount();
+        await Promise.all([
+            gitLog(),
+            gitBranch(),
+            getPullPushCount(),
+        ]);
 
         hideOverlay(GitCommand.Fetch);
     }
@@ -1883,8 +1893,6 @@ function App() {
                                     onContextMenu={(event) => handleContextMenu_branch(event, v)}
                                     style={{
                                         display: 'flex',
-                                        color: v.branch_state === BranchState.Current ? '#1493ad' : '',
-                                        fontWeight: v.branch_state === BranchState.Current ? 'bold' : 'normal',
                                         listStyleType: 'none',
                                         padding: '10px',
                                         flex: '1',
@@ -1900,7 +1908,10 @@ function App() {
                                                 }}/>
                                             ) : (<div/>)
                                     }
-                                    <div>
+                                    <div style={{
+                                        color: v.branch_state === BranchState.Current ? '#1493ad' : '',
+                                        fontWeight: v.branch_state === BranchState.Current ? 'bold' : 'normal',
+                                    }}>
                                         {getBranchNameViewStr(v)}
                                     </div>
                                 </li>
