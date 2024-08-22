@@ -17,7 +17,7 @@
 <img src="./readme_images/menu.png" width="40%">
 
 - **Open**: 操作対象のgitプロジェクトフォルダを選択します。
-- **Fetch**: fetchします。(マージはしません)
+- **Fetch**: fetchします。
 - **Pull**: pullします。リモートブランチが現在のブランチより進んでいる数が表示されます。
 - **Push**: プッシュします。現在のブランチがリモートブランチより進んでいる数が表示されます。
 - **タイトルバー**: 現在開いているgitプロジェクトフォルダが表示されます。
@@ -100,7 +100,7 @@ D: 削除
     <img src="./readme_images/log_contextmenu2.png" width="20%">
 </div>
 
-3. この状態で別のブランチをチェックアウトすることで、通常状態に戻ります。
+3. 別のブランチにチェックアウトすることで通常状態に戻ります。
 <div style="text-align: center;">
     <img src="./readme_images/log_contextmenu3.png" width="20%">
 </div>
@@ -112,7 +112,7 @@ D: 削除
 
 > [!NOTE]
 > このアプリケーションは以下のパスに"ZenGit"という名前のキャッシュフォルダを作成します。
-> アプリケーションが正常に動かない場合はキャッシュフォルダを試してください。
+> アプリケーションが正常に動かない場合はキャッシュフォルダの削除を試してください。
 > ```
 > Windows: $HOME\AppData\Roaming\
 > macOS: $HOME/Library/Application Support/
