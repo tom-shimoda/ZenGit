@@ -5,6 +5,7 @@
 mod platform;
 
 use std::borrow::Cow;
+use std::env;
 use tauri::{AppHandle, command, Manager, WindowUrl};
 use std::process::{Output, Stdio};
 use std::str::FromStr;
@@ -18,7 +19,7 @@ use std::io::{self, Write};
 use std::path::{Path, PathBuf};
 use std::sync::Arc;
 use std::time::{SystemTime, UNIX_EPOCH};
-use log::info;
+use log::{debug, info};
 use tokio::process::Command;
 use tokio_util::sync::CancellationToken;
 use futures::future::{err, FutureExt, ok};
@@ -32,6 +33,8 @@ use window_shadows::set_shadow;
 static GLOBAL_CANCELLATION_TOKENS: Lazy<Arc<Mutex<Vec<TaskHandle>>>> = Lazy::new(|| {
     Arc::new(Mutex::new(vec![]))
 });
+
+static CURRENT_PATH: Lazy<std::sync::Mutex<String>> = Lazy::new(|| std::sync::Mutex::new(String::new()));
 
 #[derive(Clone)]
 struct TaskHandle {
@@ -79,7 +82,7 @@ async fn is_running_command(git_command_label: &'static str, window_label: Strin
         |v| v.git_command_label == git_command_label && v.window_label == window_label)
     {
         if task.is_running {
-            println!("Task is running: {} for window: {}", git_command_label, window_label);
+            debug!("Task is running: {} for window: {}", git_command_label, window_label);
         }
 
         return task.is_running;
@@ -95,7 +98,7 @@ async fn create_task(git_command_label: &'static str, window_label: String) -> T
     if let Some(task) = guard.iter_mut().find(
         |v| v.git_command_label == git_command_label && v.window_label == window_label)
     {
-        println!("Do task: {} for window: {}", git_command_label, window_label);
+        debug!("Do task: {} for window: {}", git_command_label, window_label);
 
         task.run();
         return task.clone(); // 既存のトークンを返す
@@ -110,7 +113,7 @@ async fn create_task(git_command_label: &'static str, window_label: String) -> T
     let new_task_clone = new_task.clone();
     guard.push(new_task);
 
-    println!("Added task: {} for window: {}", git_command_label, window_label);
+    debug!("Added task: {} for window: {}", git_command_label, window_label);
 
     new_task_clone
 }
@@ -121,9 +124,9 @@ async fn done_task(git_command_label: &'static str, window_label: String) {
         |v| v.git_command_label == git_command_label && v.window_label == window_label)
     {
         task.done();
-        println!("Done task: {} for window: {}", git_command_label, window_label);
+        debug!("Done task: {} for window: {}", git_command_label, window_label);
     } else {
-        println!("Task not found: {} for window: {}", git_command_label, window_label);
+        debug!("Task not found: {} for window: {}", git_command_label, window_label);
     }
 }
 
@@ -133,9 +136,9 @@ async fn cancel_task(git_command_label: &'static str, window_label: String) {
         |v| v.git_command_label == git_command_label && v.window_label == window_label)
     {
         task.cancel();
-        println!("Cancelled task: {} for window: {}", git_command_label, window_label);
+        debug!("Cancelled task: {} for window: {}", git_command_label, window_label);
     } else {
-        println!("Task not found: {} for window: {}", git_command_label, window_label);
+        debug!("Task not found: {} for window: {}", git_command_label, window_label);
     }
 }
 
@@ -321,7 +324,7 @@ const GIT_DIFF_COMMAND: &str = "git_diff";
 async fn git_diff(app_handle: AppHandle, window_label: String, file: String) -> Result<(), String> {
     // 新規追加ファイルのdiffを取るため`git add -N`しておく
     let _ = Command::new("git").arg("add").arg("-N").arg(&file).set_creation_flags().output().await;
-    
+
     const RESULT_LABEL: &str = "post-git-diff-result";
 
     // CancellationTokenをクローンして非同期タスクに渡す
@@ -602,10 +605,10 @@ async fn git_push(app_handle: AppHandle, window_label: String) -> Result<(), Str
                               },
         ).await {
             Ok(output) => {
-                println!("ok: {}", output)
+                debug!("ok: {}", output)
             }
             Err(e) => {
-                println!("err: {}", e)
+                debug!("err: {}", e)
             }
         }
     });
@@ -652,10 +655,10 @@ async fn git_pull(app_handle: AppHandle, window_label: String) -> Result<(), Str
                               },
         ).await {
             Ok(output) => {
-                println!("ok: {}", output)
+                debug!("ok: {}", output)
             }
             Err(e) => {
-                println!("err: {}", e)
+                debug!("err: {}", e)
             }
         }
     });
@@ -826,25 +829,43 @@ fn load_folder_path() -> io::Result<String> {
     Ok(path)
 }
 
+fn set_current_dir(dir_path: &String) {
+    let mut path = CURRENT_PATH.lock().unwrap();
+    *path = dir_path.to_string();
+
+    let _ = env::set_current_dir(&dir_path).map_err(|e| e.to_string());
+}
+
+
+fn git_folder_exists(dir_path: &String) -> bool {
+    // 指定されたパスに ".git" フォルダがあるかどうか確認
+    let git_path = Path::new(dir_path).join(".git");
+
+    // パスがディレクトリかどうか確認
+    git_path.is_dir()
+}
+
 #[command]
 fn select_git_folder() -> Result<String, String> {
     match rfd::FileDialog::new().pick_folder() {
         Some(path) => {
-            let path_str = path.to_str().ok_or("Invalid path")?.to_string();
-            save_folder_path(&path_str).map_err(|e| e.to_string())?;
-            std::env::set_current_dir(&path).map_err(|e| e.to_string())?;
-            Ok(path_str)
+            if git_folder_exists(&path.to_str().unwrap().to_string()) {
+                let path_str = path.to_str().ok_or("Invalid path")?.to_string();
+                save_folder_path(&path_str).map_err(|e| e.to_string())?;
+                set_current_dir(&path_str);
+                Ok(path_str)
+            } else {
+                Err("Not a git repository.".into())
+            }
         }
-        None => Err("No folder selected".into())
+        // None => Err("Please select a git folder.".into())
+        None => Err("".to_string())
     }
 }
 
 #[command]
 fn get_git_folder() -> Result<String, String> {
-    match load_folder_path() {
-        Ok(path) => Ok(path),
-        Err(e) => Err(e.to_string())
-    }
+    Ok(CURRENT_PATH.lock().unwrap().to_string())
 }
 
 #[derive(Serialize)]
@@ -921,7 +942,7 @@ async fn git_log(app_handle: AppHandle, window_label: String, is_show_all: bool,
                                                   author: "".to_string(),
                                                   message: "".to_string(),
                                                   date: "".to_string(),
-                                                  branch: "".to_string()
+                                                  branch: "".to_string(),
                                               }
                                           }
                                       })
@@ -1166,7 +1187,7 @@ async fn open_new_window(app_handle: AppHandle, hash: String, x: f64, y: f64) {
     let app_handle_clone = app_handle.clone();
     new_window.listen("ready-to-receive", move |event| {
         if let Some(window_label) = event.payload() {
-            println!("open new window: {}", window_label);
+            debug!("open new window: {}", window_label);
             let window_label = window_label.trim_matches('"');
             app_handle_clone.app_handle()
                 .emit_to(window_label, "commit-hash", hash.clone())
@@ -1369,7 +1390,7 @@ async fn git_branch_checkout(app_handle: AppHandle, window_label: String, checko
                               command,
                               RESULT_LABEL,
                               |h, wl, o| {
-                                  println!("Success (git_branch_checkout): {}", o);
+                                  debug!("Success (git_branch_checkout): {}", o);
 
                                   let message = EmitMessage {
                                       is_ok: true,
@@ -1557,8 +1578,12 @@ async fn main() {
             is_on_branch,
         ])
         .setup(|app| {
+            // アプリ起動時のカレントディレクトリを確保しておく
+            let init_current_dir: PathBuf = env::current_dir().expect("Failed to get current directory");
+
+            // 一旦前回開いていたフォルダをカレントに
             if let Ok(path) = load_folder_path() {
-                std::env::set_current_dir(path).expect("Failed to set current directory");
+                set_current_dir(&path);
             }
 
             // "main" ウィンドウの取得
@@ -1567,6 +1592,28 @@ async fn main() {
             // ウィンドウに window-shadows の装飾を適用
             #[cfg(any(windows, target_os = "macos"))]
             set_shadow(main_window, true).unwrap();
+
+
+            // cli起動時に引数で指定されたフォルダを開く
+            let mut raw_args = clap_lex::RawArgs::new(env::args_os().into_iter());
+            let mut cursor = raw_args.cursor();
+            raw_args.next_os(&mut cursor); // index 0にはアプリ自体のパスが渡るため、1つ進める
+            if let Some(argv0) = raw_args.next_os(&mut cursor) {
+                let mut path = Path::new(&argv0).to_str().unwrap().to_string();
+                if path == "." {
+                    // アプリ起動時のカレントディレクトリを指定
+                    path = init_current_dir.to_str().unwrap().to_string();
+                }
+                
+                if git_folder_exists(&path) {
+                    // 指定されたフォルダを開く
+                    set_current_dir(&path);
+                } else {
+                    let err = "fatal: not a git repository.";
+                    eprintln!("{}", err); // エラーメッセージをCLIに出力
+                    return Err(Box::from(err)); // エラーを返し、アプリケーションを終了 
+                }
+            };
 
             Ok(())
         })

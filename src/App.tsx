@@ -1131,7 +1131,10 @@ function App() {
                 gitBranch(), // current branch情報がほしいのでbranchも取得しておく
             ]);
         } catch (error) {
-            console.error("Failed to select git folder:", error);
+            if (error) { // cancelボタンを押して閉じた際はエラーメッセージなし
+                alert(error);
+                console.error("Failed to select git folder:", error);
+            }
         }
     };
 
